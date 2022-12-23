@@ -1,2 +1,2 @@
-# fastapi-projects-management
+# Fastapi-projects-management
 A project management system using fastapi
