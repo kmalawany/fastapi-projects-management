@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from routers.schemas import ProjectBase, Project, TaskBase, Task
 from database.database import get_db
 from database import projects_db
@@ -13,8 +13,9 @@ def create_project(client_id: int, request: ProjectBase, db: Session = Depends(g
 
 
 @router.get('/all')
-def get_all_projects(db: Session = Depends(get_db)):
-    return projects_db.get_all_projects(db)
+def get_all_projects(db: Session = Depends(get_db), skip: int = 0,
+                          limit: int = Query(default=5, le=5)):
+    return projects_db.get_all_projects(db, skip, limit)
 
 
 @router.get('/{id}')
@@ -22,7 +23,7 @@ def get_project(id: int, db: Session = Depends(get_db)):
     return projects_db.get_one_project(db, id)
 
 
-@router.delete('')
+@router.delete('/delete/{id}')
 def delete_project(id: int, db: Session = Depends(get_db)):
     projects_db.delete_project(db, id)
     return 'Project deleted!'

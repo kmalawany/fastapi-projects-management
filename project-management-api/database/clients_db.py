@@ -18,12 +18,16 @@ def add(db: Session, request: ClientBase):
     return new_client
 
 
-def get_all(db: Session):
-    return db.query(Client).all()
+def get_all(db: Session, skip: int = 0, limit: int = 5):
+    return db.query(Client).offset(skip).limit(limit).all()
 
 
 def get_client(db: Session, id: int):
-    return db.query(Client).filter(Client.id == id).first()
+    client = db.query(Client).filter(Client.id == id).first()
+    if client is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Client not found')
+    else:
+        return client
 
 
 def delete_client(db: Session, id: int):

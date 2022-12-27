@@ -13,7 +13,7 @@ class Projects(Base):
     is_active = Column(Boolean, default=True)
     client_id = Column(Integer, ForeignKey('clients.id'))
 
-    tasks = relationship('Tasks', back_populates='project')
+    project_tasks = relationship('Tasks', back_populates='project')
     client = relationship('Client', back_populates='project')
 
 
@@ -27,7 +27,8 @@ class Tasks(Base):
     end_date = Column(Date)
     description = Column(String)
 
-    project = relationship('Projects', back_populates='tasks')
+    project = relationship('Projects', back_populates='project_tasks')
+    employee = relationship('Employee', back_populates='emp_tasks')
 
 
 class Client(Base):
@@ -46,7 +47,10 @@ class Employee(Base):
     __tablename__ = 'employee'
 
     id = Column(Integer, index=True, primary_key=True)
+    task_id = Column(Integer, ForeignKey('tasks.id'))
     name = Column(String)
-    email = Column(String, unique=True)
+    email = Column(String)
     department = Column(String)
     position = Column(String)
+
+    emp_tasks = relationship('Tasks', back_populates='employee')

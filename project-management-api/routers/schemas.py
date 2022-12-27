@@ -24,9 +24,25 @@ class TaskBase(BaseModel):
     description: str
 
 
+class EmployeeBase(BaseModel):
+    name: str
+    email: str
+    department: str
+    position: str
+
+
+class Employees(EmployeeBase):
+    id: int
+    task_id: int
+
+    class Config:
+        orm_mode = True
+
+
 class Task(TaskBase):
     id: int
     project_id: int
+    employee: List[Employees] = []
 
     class Config:
         orm_mode = True
@@ -44,24 +60,6 @@ class Project(ProjectBase):
 class Client(ClientBase):
     id: int
     projects: List[Project] = []
-
-    class Config:
-        orm_mode = True
-
-
-class EmployeeBase(BaseModel):
-    name: str
-    email: str
-    department: str
-    position: str
-
-
-class EmployeeDisplay(BaseModel):
-    id: int
-    name: str
-    email: str
-    department: str
-    position: str
 
     class Config:
         orm_mode = True

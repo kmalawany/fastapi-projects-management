@@ -1,6 +1,6 @@
-from routers.schemas import ProjectBase, TaskBase
+from routers.schemas import ProjectBase, TaskBase, EmployeeBase
 from sqlalchemy.orm.session import Session
-from database.models import Projects, Tasks
+from database.models import Projects, Tasks, Employee
 from fastapi import HTTPException, status
 
 
@@ -18,12 +18,16 @@ def create_project(client_id: int, db: Session, request: ProjectBase):
     return new_project
 
 
-def get_all_projects(db: Session):
-    return db.query(Projects).all()
+def get_all_projects(db: Session, skip: int = 0, limit: int = 5):
+    return db.query(Projects).offset(skip).limit(limit).all()
 
 
 def get_one_project(db: Session, id: int):
-    return db.query(Projects).filter(Projects.id == id).first()
+    project = db.query(Projects).filter(Projects.id == id).first()
+    if project is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Project not found')
+    else:
+        return project
 
 
 def delete_project(db: Session, id: int):
@@ -53,9 +57,6 @@ def create_project_task(project_id: int, db: Session, request: TaskBase):
 
 def get_all_project_task(project_id, db: Session):
     return db.query(Tasks).filter(project_id == project_id).all()
-
-
-
 
 
 
